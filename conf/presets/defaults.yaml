@@ -1,0 +1,4 @@
+---
+winobot:
+    markov_chain:
+        enabled: 0

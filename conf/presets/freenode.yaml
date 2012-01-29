@@ -1,0 +1,28 @@
+---
+winobot:
+    database:
+        host: 127.0.0.1
+        port: 27017
+    servers:
+        FreeNode:
+            nick: winobot
+            host: irc.freenode.net
+            port: 6667
+            channels:
+                '#winobot':
+                    options:
+                        autojoin: true
+                    features:
+                        - Date
+                        - Drinking
+                        - Echo
+                        - Help
+                        - TinyURL
+                        - Uptime
+                        - WordCounter
+                        - Random
+                    feature_options:
+                        WordCounter:
+                            -
+                                command: hellocount
+                                regex: !!perl/regexp (?i:(hi|hello|yo|greetings|hey))
