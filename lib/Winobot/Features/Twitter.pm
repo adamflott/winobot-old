@@ -14,6 +14,7 @@ use Time::Duration;
 # local
 use Winobot;
 use Winobot::Log;
+use Winobot::Utils qw(psc);
 
 my $log = Winobot::Log->new;
 
