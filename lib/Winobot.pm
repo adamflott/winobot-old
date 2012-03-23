@@ -227,6 +227,23 @@ sub registered {
 
 # -------- Begin Channel Administration Events --------
 
+sub channel_change {
+    my ($server_info, $irc, $msg, $channel_name, $old_nick, $new_nick, $is_myself) = @_;
+
+    my $channel = get_channel($server_info->{'name'}, $channel_name);
+
+    my $state = Winobot::State->new(
+        'id'          => [ $server_info->{'name'}, $channel->name ],
+        'server_info' => $server_info,
+        'db'          => $db,
+        'irc'         => $irc,
+        'args'    => {'old_nick' => $old_nick, 'new_nick' => $new_nick, 'is_myself' => $is_myself},
+        'channel' => $channel,
+    );
+
+    return _handle_returned($channel, _call_irc_event('channel_change', $channel, $state));
+}
+
 sub channel_topic {
     my ($server_info, $irc, $channel_name, $topic, $who) = @_;
 
@@ -839,16 +856,17 @@ EOA
         my $pc = AnyEvent::IRC::Client->new;
 
         $pc->reg_cb(
-            'channel_topic' => sub { Winobot::channel_topic($server, @_) },
-            'connect'       => sub { Winobot::connect($server,       @_) },
-            'disconnect'    => sub { Winobot::disconnect($server,    @_) },
-            'irc_invite'    => sub { Winobot::invite($server,        @_) },
-            'join'          => sub { Winobot::join($server,          @_) },
-            'kick'          => sub { Winobot::kick($server,          @_) },
-            'part'          => sub { Winobot::part($server,          @_) },
-            'privatemsg'    => sub { Winobot::privatemsg($server,    @_) },
-            'publicmsg'     => sub { Winobot::publicmsg($server,     @_) },
-            'registered'    => sub { Winobot::registered($server,    @_) },
+            'channel_change' => sub { Winobot::channel_change($server, @_) },
+            'channel_topic'  => sub { Winobot::channel_topic($server,  @_) },
+            'connect'        => sub { Winobot::connect($server,        @_) },
+            'disconnect'     => sub { Winobot::disconnect($server,     @_) },
+            'irc_invite'     => sub { Winobot::invite($server,         @_) },
+            'join'           => sub { Winobot::join($server,           @_) },
+            'kick'           => sub { Winobot::kick($server,           @_) },
+            'part'           => sub { Winobot::part($server,           @_) },
+            'privatemsg'     => sub { Winobot::privatemsg($server,     @_) },
+            'publicmsg'      => sub { Winobot::publicmsg($server,      @_) },
+            'registered'     => sub { Winobot::registered($server,     @_) },
         );
 
         my $s = Winobot::Server->new(
