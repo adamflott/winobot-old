@@ -22,6 +22,27 @@ sub load {
 
     register_irc_event([ $id->[0], '*' ], 'invite', \&setup_transformer);
 
+    my $config = get_feature_option($id, 'SRP');
+
+    if (exists $config->{'dave'} && length $config->{'dave'}) {
+        register_irc_event(
+            $id, 'join',
+            sub {
+                my ($state) = @_;
+
+                schedule_task(
+                    sub {
+                        $state->args($config->{'dave'});
+                        return start($state);
+                    },
+                    2.0
+                );
+
+                return;
+            }
+        );
+    }
+
     $waiting_room_id = $id;
 
     return;
@@ -32,7 +53,7 @@ sub start {
 
     my $config = get_feature_option($state->id, 'SRP');
 
-    $alice = Algorithm::IRCSRP2::Alice->new('debug_cb' => sub {});
+    $alice = Algorithm::IRCSRP2::Alice->new('debug_cb' => sub { });
 
     $alice->I($config->{'user'});
     $alice->P($config->{'password'});

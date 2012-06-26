@@ -290,6 +290,7 @@ sub join {    ## no critic
 
     my $state = Winobot::State->new(
         'id'  => [ $server_info->{'name'}, $channel->name ],
+        'server_info' => $server_info,
         'db'  => $db,
         'irc' => $irc,
         'args' => $is_myself ? 1 : 0,
