@@ -30,6 +30,8 @@ sub load {
             sub {
                 my ($state) = @_;
 
+                return unless $state->args;
+
                 schedule_task(
                     sub {
                         $state->args($config->{'dave'});
