@@ -116,7 +116,7 @@ Any reasonably recent version will do.
 
 ### SRP ###
 
-1. automatic srp'ing on connect / join / reconnect
+1. automatic srp'ing on reconnect
 1. handle multiple channels, servers
 
 ## Thorium ##
